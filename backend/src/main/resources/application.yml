@@ -1,0 +1,104 @@
+server:
+  port: ${PORT:8080}
+  forward-headers-strategy: framework
+  tomcat:
+    max-swallow-size: 25MB
+
+spring:
+  application:
+    name: vidyasetu
+  threads:
+    virtual:
+      enabled: true
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/vidyasetu}
+    username: ${DB_USER:vidyasetu}
+    password: ${DB_PASSWORD:change-me}
+    hikari:
+      maximum-pool-size: 20
+  flyway:
+    enabled: true
+    locations: classpath:db/migration
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 21MB
+  cache:
+    type: caffeine
+    caffeine:
+      spec: maximumSize=500,expireAfterWrite=15s
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+  mvc:
+    async:
+      request-timeout: -1
+
+app:
+  demo-mode: ${APP_DEMO_MODE:true}
+  academic-year: 2026-27
+  data-dir: ${APP_DATA_DIR:./data}
+  public-base-url: ${APP_PUBLIC_BASE_URL:http://localhost:5173}
+  seed-on-startup: ${APP_SEED_ON_STARTUP:true}
+  jwt:
+    access-ttl-minutes: ${JWT_ACCESS_TTL_MINUTES:60}
+    refresh-ttl-hours: 12
+    signing-key-path: ${JWT_SIGNING_KEY_PATH:}
+  field-encryption-key: ${FIELD_ENCRYPTION_KEY:}
+  cors-origins: ${APP_CORS_ORIGINS:http://localhost:5173,http://localhost:3000,http://localhost}
+  redis:
+    enabled: ${REDIS_ENABLED:false}
+    url: ${REDIS_URL:redis://localhost:6379}
+
+apaar:
+  provider: ${APAAR_PROVIDER:mock}
+  mock:
+    chaos: ${APAAR_MOCK_CHAOS:false}
+    latency-ms: ${APAAR_MOCK_LATENCY_MS:0}
+
+security:
+  mfa:
+    enforced: ${SECURITY_MFA_ENFORCED:false}
+
+ai:
+  explanations:
+    enabled: ${AI_EXPLANATIONS_ENABLED:false}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      show-details: never
+  info:
+    env:
+      enabled: true
+
+info:
+  app:
+    name: VidyaSetu
+    description: APAAR-based Student Data Management & Verification System
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+  api-docs:
+    path: /v3/api-docs
+
+logging:
+  level:
+    root: INFO
+    org.springframework.security: WARN
+    io.zonky: WARN
+
+---
+spring:
+  config:
+    activate:
+      on-profile: local-embedded
+app:
+  embedded-pg:
+    port: ${EMBEDDED_PG_PORT:54329}
