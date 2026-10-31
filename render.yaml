@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: vidyasetu-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: free
+    region: oregon
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: local-embedded
+      - key: APP_DEMO_MODE
+        value: "true"
+      - key: APP_SEED_ON_STARTUP
+        value: "true"
+      - key: JAVA_TOOL_OPTIONS
+        value: "-XX:+UseSerialGC -Xmx384m -Xms128m"
+      - key: APP_CORS_ORIGINS
+        value: "http://localhost:5173,https://*.vercel.app"
